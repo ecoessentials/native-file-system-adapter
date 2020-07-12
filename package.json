@@ -1,4 +1,6 @@
 {
+  "name": "native-file-system-adapter",
+  "version": "0.1.0",
   "dependencies": {
     "web-streams-polyfill": "^2.1.1"
   }
