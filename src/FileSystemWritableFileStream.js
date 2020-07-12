@@ -1,6 +1,6 @@
 /* global globalThis */
 
-import { WritableStream } from 'https://cdn.jsdelivr.net/npm/web-streams-polyfill@2.1.0/dist/ponyfill.es2018.mjs'
+import { WritableStream } from 'web-streams-polyfill/dist/ponyfill.es2018'
 
 const Writable = globalThis.WritableStream || WritableStream
 
@@ -8,11 +8,11 @@ const Writable = globalThis.WritableStream || WritableStream
  * @lends WritableStream
  */
 class FileSystemWritableFileStream extends Writable {
-  constructor (sink) {
+  constructor(sink) {
     super(sink)
     this._closed = false
   }
-  close () {
+  close() {
     this._closed = true
     const w = this.getWriter()
     const p = w.close()
@@ -20,15 +20,17 @@ class FileSystemWritableFileStream extends Writable {
     return p
     // return super.close ? super.close() : this.getWriter().close()
   }
-  seek (position) {
+  seek(position) {
     return this.write({ type: 'seek', position })
   }
-  truncate (size) {
+  truncate(size) {
     return this.write({ type: 'truncate', size })
   }
-  write (data) {
+  write(data) {
     if (this._closed) {
-      return Promise.reject(new TypeError('Cannot write to a CLOSED writable stream'))
+      return Promise.reject(
+        new TypeError('Cannot write to a CLOSED writable stream')
+      )
     }
 
     const writer = this.getWriter()
@@ -38,12 +40,16 @@ class FileSystemWritableFileStream extends Writable {
   }
 }
 
-Object.defineProperty(FileSystemWritableFileStream.prototype, Symbol.toStringTag, {
-  value: 'FileSystemWritableFileStream',
-  writable: false,
-  enumerable: false,
-  configurable: true
-})
+Object.defineProperty(
+  FileSystemWritableFileStream.prototype,
+  Symbol.toStringTag,
+  {
+    value: 'FileSystemWritableFileStream',
+    writable: false,
+    enumerable: false,
+    configurable: true
+  }
+)
 
 Object.defineProperties(FileSystemWritableFileStream.prototype, {
   close: { enumerable: true },
